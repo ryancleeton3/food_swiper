@@ -1,0 +1,67 @@
+import React from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SwipeCard } from '../../components/SwipeCard';
+import { ThemedText } from '../../components/ThemedText';
+import { useFoodData } from '../../hooks/useFoodData';
+
+export default function SwipeScreen() {
+    const { stack, swipeFood, loading } = useFoodData();
+
+    const handleSwipeLeft = () => {
+        if (stack.length > 0) {
+            swipeFood(stack[0].id, 'disliked');
+        }
+    };
+
+    const handleSwipeRight = () => {
+        if (stack.length > 0) {
+            swipeFood(stack[0].id, 'liked');
+        }
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <ThemedText>Loading...</ThemedText>
+            </View>
+        );
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.cardContainer}>
+                {stack.length > 0 ? (
+                    stack.slice(0, 2).reverse().map((food, index) => (
+                        <SwipeCard
+                            key={food.id}
+                            food={food}
+                            onSwipeLeft={handleSwipeLeft}
+                            onSwipeRight={handleSwipeRight}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.emptyContainer}>
+                        <ThemedText type="title">No more food!</ThemedText>
+                        <ThemedText>Check back later.</ThemedText>
+                    </View>
+                )}
+            </View>
+        </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f3f4f6',
+    },
+    cardContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
