@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import InitialFoodData from '../constants/InitialFoodData.json';
+import InitialFoodData from '../constants/MealData.json';
 import { FoodItem, FoodStatus } from '../types';
 
 const STORAGE_KEY = '@food_swiper_data_v1';
