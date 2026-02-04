@@ -6,7 +6,10 @@ import { ThemedText } from '../../components/ThemedText';
 import { useFoodData } from '../../hooks/useFoodData';
 
 export default function DatabaseScreen() {
-    const { database, toggleStatus } = useFoodData();
+    const [activeTab, setActiveTab] = React.useState<'meals' | 'ingredients'>('meals');
+    const context = useFoodData();
+    const dataManager = activeTab === 'meals' ? context.meals : context.ingredients;
+    const { items, toggleStatus } = dataManager;
 
     const renderItem = ({ item }: { item: any }) => (
         <TouchableOpacity onPress={() => toggleStatus(item.id)} style={styles.item}>
@@ -27,9 +30,27 @@ export default function DatabaseScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ThemedText type="title" style={styles.header}>Food Database</ThemedText>
+            <View style={styles.header}>
+                <ThemedText type="title">Database</ThemedText>
+            </View>
+
+            <View style={styles.segmentContainer}>
+                <TouchableOpacity
+                    style={[styles.segmentButton, activeTab === 'meals' && styles.activeSegment]}
+                    onPress={() => setActiveTab('meals')}
+                >
+                    <ThemedText style={[styles.segmentText, activeTab === 'meals' && styles.activeSegmentText]}>Meals</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.segmentButton, activeTab === 'ingredients' && styles.activeSegment]}
+                    onPress={() => setActiveTab('ingredients')}
+                >
+                    <ThemedText style={[styles.segmentText, activeTab === 'ingredients' && styles.activeSegmentText]}>Ingredients</ThemedText>
+                </TouchableOpacity>
+            </View>
+
             <FlatList
-                data={database}
+                data={items}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.list}
@@ -45,9 +66,40 @@ const styles = StyleSheet.create({
     },
     header: {
         padding: 20,
+        paddingBottom: 10,
+    },
+    segmentContainer: {
+        flexDirection: 'row',
+        marginHorizontal: 20,
+        marginBottom: 10,
+        backgroundColor: '#f3f4f6',
+        borderRadius: 8,
+        padding: 4,
+    },
+    segmentButton: {
+        flex: 1,
+        paddingVertical: 8,
+        alignItems: 'center',
+        borderRadius: 6,
+    },
+    activeSegment: {
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    segmentText: {
+        fontWeight: '600',
+        color: '#6b7280',
+    },
+    activeSegmentText: {
+        color: '#000',
     },
     list: {
         padding: 20,
+        paddingTop: 0,
     },
     item: {
         flexDirection: 'row',

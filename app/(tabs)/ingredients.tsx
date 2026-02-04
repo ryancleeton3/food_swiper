@@ -4,9 +4,9 @@ import { SwipeCard } from '../../components/SwipeCard';
 import { ThemedText } from '../../components/ThemedText';
 import { useDerivedData, useFoodData } from '../../hooks/useFoodData';
 
-export default function SwipeScreen() {
-    const { meals } = useFoodData();
-    const { stack, swipeItem, loading } = useDerivedData(meals);
+export default function IngredientSwipeScreen() {
+    const { ingredients } = useFoodData();
+    const { stack, swipeItem, loading } = useDerivedData(ingredients);
 
     const handleSwipeLeft = () => {
         if (stack.length > 0) {
@@ -42,8 +42,8 @@ export default function SwipeScreen() {
                     ))
                 ) : (
                     <View style={styles.emptyContainer}>
-                        <ThemedText type="title">No more food!</ThemedText>
-                        <ThemedText>Check back later.</ThemedText>
+                        <ThemedText type="title">No more ingredients!</ThemedText>
+                        <ThemedText>You've swiped them all.</ThemedText>
                     </View>
                 )}
             </View>
@@ -54,7 +54,7 @@ export default function SwipeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f3f4f6',
+        backgroundColor: '#eef2ff', // Slightly different bg for visual distinction
     },
     cardContainer: {
         flex: 1,
