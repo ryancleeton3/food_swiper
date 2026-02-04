@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { generateMockFoods } from '../constants/MockData';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import InitialFoodData from '../constants/InitialFoodData.json';
 import { FoodItem, FoodStatus } from '../types';
 
 const STORAGE_KEY = '@food_swiper_data_v1';
@@ -30,8 +30,8 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
             if (jsonValue != null) {
                 setFoods(JSON.parse(jsonValue));
             } else {
-                // First run: seed data
-                const initialData = generateMockFoods();
+                // First run: seed data from bundled JSON
+                const initialData = InitialFoodData as FoodItem[];
                 setFoods(initialData);
                 await saveData(initialData);
             }
@@ -73,23 +73,23 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const resetData = useCallback(async () => {
-        const initialData = generateMockFoods();
+        const initialData = InitialFoodData as FoodItem[];
         setFoods(initialData);
         await saveData(initialData);
     }, []);
 
     return (
-        <FoodContext.Provider value= {{
-        foods,
+        <FoodContext.Provider value={{
+            foods,
             loading,
             swipeFood,
             toggleStatus,
             resetData
-    }
-}>
-    { children }
-    </FoodContext.Provider>
-  );
+        }
+        }>
+            {children}
+        </FoodContext.Provider>
+    );
 }
 
 // Hook to consume the context
