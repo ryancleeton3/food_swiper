@@ -4,12 +4,17 @@ import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { useFoodData } from '../../hooks/useFoodData';
+import { shareCSV } from '../../utils/csvExport';
 
 export default function DatabaseScreen() {
     const [activeTab, setActiveTab] = React.useState<'meals' | 'ingredients'>('meals');
     const context = useFoodData();
     const dataManager = activeTab === 'meals' ? context.meals : context.ingredients;
     const { items, toggleStatus } = dataManager;
+
+    const handleExport = () => {
+        shareCSV(context.meals.items, context.ingredients.items);
+    };
 
     const renderItem = ({ item }: { item: any }) => (
         <TouchableOpacity onPress={() => toggleStatus(item.id)} style={styles.item}>
@@ -32,6 +37,9 @@ export default function DatabaseScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <ThemedText type="title">Database</ThemedText>
+                <TouchableOpacity onPress={handleExport} style={styles.exportButton}>
+                    <Ionicons name="share-outline" size={24} color="#007AFF" />
+                </TouchableOpacity>
             </View>
 
             <View style={styles.segmentContainer}>
@@ -67,6 +75,12 @@ const styles = StyleSheet.create({
     header: {
         padding: 20,
         paddingBottom: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    exportButton: {
+        padding: 8,
     },
     segmentContainer: {
         flexDirection: 'row',
