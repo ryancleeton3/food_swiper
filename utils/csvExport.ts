@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { FoodItem } from '../types';
 
@@ -27,7 +27,7 @@ export const shareCSV = async (meals: FoodItem[], ingredients: FoodItem[]) => {
 
     try {
         await FileSystem.writeAsStringAsync(fileUri, csvData, {
-            encoding: FileSystem.EncodingType.UTF8,
+            encoding: 'utf8',
         });
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
