@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import React from 'react';
-import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { useFoodData } from '../../hooks/useFoodData';
@@ -18,7 +19,12 @@ export default function DatabaseScreen() {
 
     const renderItem = ({ item }: { item: any }) => (
         <TouchableOpacity onPress={() => toggleStatus(item.id)} style={styles.item}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image
+                source={{ uri: item.image }}
+                style={styles.image}
+                contentFit="cover"
+                cachePolicy="memory-disk"
+            />
             <View style={styles.details}>
                 <ThemedText type="defaultSemiBold">{item.name}</ThemedText>
                 <ThemedText style={{ color: item.status === 'liked' ? 'green' : item.status === 'disliked' ? 'red' : 'gray' }}>

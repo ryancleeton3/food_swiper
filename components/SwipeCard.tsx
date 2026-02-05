@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import React from 'react';
-import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     Extrapolation,
@@ -68,7 +69,13 @@ export function SwipeCard({ food, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
     return (
         <GestureDetector gesture={pan}>
             <Animated.View style={[styles.card, animatedStyle]}>
-                <ImageBackground source={{ uri: food.image }} style={styles.image} resizeMode="cover">
+                <Image
+                    source={food.image}
+                    style={styles.image}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                />
+                <View style={styles.overlayContainer}>
                     <View style={styles.overlay}>
                         <ThemedText type="title" style={styles.text}>{food.name}</ThemedText>
                     </View>
@@ -82,7 +89,7 @@ export function SwipeCard({ food, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
                     <Animated.View style={[styles.feedback, styles.nope, nopeOpacityStyle]}>
                         <ThemedText type="title" style={styles.feedbackText}>NOPE</ThemedText>
                     </Animated.View>
-                </ImageBackground>
+                </View>
             </Animated.View>
         </GestureDetector>
     );
@@ -105,6 +112,10 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: '100%',
+        position: 'absolute',
+    },
+    overlayContainer: {
+        flex: 1,
         justifyContent: 'flex-end',
     },
     overlay: {
