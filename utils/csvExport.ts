@@ -1,5 +1,5 @@
 import * as FileSystem from 'expo-file-system';
-import * as MailComposer from 'expo-mail-composer';
+import * as Sharing from 'expo-sharing';
 import { FoodItem } from '../types';
 
 export const generateCSV = (meals: FoodItem[], ingredients: FoodItem[]): string => {
@@ -22,12 +22,6 @@ export const generateCSV = (meals: FoodItem[], ingredients: FoodItem[]): string 
 };
 
 export const shareCSV = async (meals: FoodItem[], ingredients: FoodItem[]) => {
-    const isAvailable = await MailComposer.isAvailableAsync();
-    if (!isAvailable) {
-        alert('Email sharing is not available on this device');
-        return;
-    }
-
     const csvData = generateCSV(meals, ingredients);
     const fileUri = FileSystem.documentDirectory + 'food_swiper_data.csv';
 
@@ -36,11 +30,16 @@ export const shareCSV = async (meals: FoodItem[], ingredients: FoodItem[]) => {
             encoding: FileSystem.EncodingType.UTF8,
         });
 
-        await MailComposer.composeAsync({
-            subject: 'My Food Swiper Data',
-            body: 'Here is the CSV export of your food preferences.',
-            attachments: [fileUri],
-        });
+        const isSharingAvailable = await Sharing.isAvailableAsync();
+        if (isSharingAvailable) {
+            await Sharing.shareAsync(fileUri, {
+                mimeType: 'text/csv',
+                dialogTitle: 'Export Food Data',
+                UTI: 'public.comma-separated-values-text'
+            });
+        } else {
+            alert('Sharing is not available on this device');
+        }
     } catch (error) {
         console.error('Error sharing CSV:', error);
         alert('Failed to generate or share CSV');
